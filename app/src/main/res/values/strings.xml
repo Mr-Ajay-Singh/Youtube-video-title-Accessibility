@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">YoutubeTestAccessibilit</string>
+    <string name="accessibility_description">Need this service for testing</string>
+</resources>

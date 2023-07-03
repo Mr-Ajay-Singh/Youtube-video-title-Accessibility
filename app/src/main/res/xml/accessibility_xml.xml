@@ -1,0 +1,10 @@
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeViewFocused|typeViewClicked|typeViewLongClicked|typeWindowContentChanged|typeContextClicked"
+    android:accessibilityFeedbackType="feedbackAllMask"
+    android:accessibilityFlags="flagDefault|flagRequestEnhancedWebAccessibility|flagReportViewIds|flagIncludeNotImportantViews|flagRetrieveInteractiveWindows"
+    android:canRetrieveWindowContent="true"
+    android:description="@string/accessibility_description"
+    android:notificationTimeout="100"
+    android:summary="@string/accessibility_description" />
+
+    <!---accessibilityFeedbackType="feedbackGeneric" -> in mi phone if app clear from recent accessibility service turn off -->
