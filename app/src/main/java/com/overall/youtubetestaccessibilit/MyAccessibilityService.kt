@@ -43,10 +43,12 @@ class MyAccessibilityService : AccessibilityService() {
         try {
             instance = this
 
-            Timber.d("==>Exception $event")
+//            Timber.d("==>Exception $event")
+            if(event?.packageName?.contains("com.google.android.youtube")!=true)return
 
-//            if (event?.viewIdResourceName?.contains("com.google.android.youtube:id/title") == true && source.text != null){
-//
+//            if (event?.source?.viewIdResourceName?.contains("com.google.android.youtube:id/title") == true && event.source?.text != null){
+//                Toast.makeText(appCtx, event.source?.text, Toast.LENGTH_SHORT).show()
+//                return
 //            }
 
             isFound = false
@@ -62,48 +64,76 @@ class MyAccessibilityService : AccessibilityService() {
     val list = arrayListOf("Cast. Disconnected","Search","Explore menu")
 
     private fun getInfo(source: AccessibilityNodeInfo?) {
+
+        Timber.d("==>Info00 ${source} ")
+        if (isFound) return
+
 //        val node =blockerFindAccessibilityNodeInfosByViewId(source,"com.google.android.youtube:id/title")
 //        if(node != null){
 //            Timber.d("==>info322 ${node}")
 //            node.forEach{
-//                if(it.text != null){
+//                if(it.text != null&& it.text != null   && !previousTitle.contains(it.text ?:"")){
+//                    isFound = true
+//                    previousTitle = it.text.toString()
+//                    Toast.makeText(appCtx, it.text, Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+
+//        if(source?.packageName?.contains("com.google.android.youtube")==true &&
+//            source?.text?.isNotEmpty() == true && source?.isFocusable == true && source?.isClickable == true
+//            && source?.isEnabled == true && source?.isImportantForAccessibility == true && source?.isVisibleToUser == true &&
+//            !list.contains(source?.text) //&& !source.text.equals(previousTitle)
+//        ){
+//            Timber.d("==>Info2 ${source} ")
+//            Timber.d("==>Info22 ${source.text} ")
+//            previousTitle = source.text.toString()
+////            prefs?.edit()?.putString("testing1",source?.text.toString())?.apply()
+//            Toast.makeText(appCtx, "${source.text}", Toast.LENGTH_SHORT).show()
+//        }
+        if (source?.viewIdResourceName?.contains("com.google.android.youtube:id/title") == true && source.text != null   && !previousTitle.contains(source?.text?:"xyz")) {
+
+            Timber.d("==>Info1 ${source} ")
+
+//            prefs?.edit()?.putString("testing1",source?.text.toString())?.apply()
+            previousTitle = source.text.toString()
+            isFound = true
+            Toast.makeText(appCtx, "${source.text}", Toast.LENGTH_SHORT).show()
+        }
+//
+        for (i in 0 until (source?.childCount ?: 0)) {
+            try {
+                getInfo(source?.getChild(i))
+//                if(getInfo(source?.getChild(i)))return true
+            } catch (e: Exception) {
+                Timber.d(e)
+            }
+        }
+
+//        val node =blockerFindAccessibilityNodeInfosByViewId(source,"com.google.android.youtube:id/title")
+//        if(node != null){
+//            Timber.d("==>info322 ${node}")
+//            node.forEach{
+//                if(it.text != null&& it.text != null   && !previousTitle.contains(it.text ?:"")){
+//                    previousTitle = it.text.toString()
 //                    Toast.makeText(appCtx, it.text, Toast.LENGTH_SHORT).show()
 //                }
 //            }
 //        }
 //    }
 
-        Timber.d("==>Info00 ${source} ")
-        if (isFound) return
-        if (source?.viewIdResourceName?.contains("com.google.android.youtube:id/title") == true && source.text != null && !source.text.equals(previousTitle)) {
-
-            Timber.d("==>Info1 ${source} ")
-
-//            prefs?.edit()?.putString("testing1",source?.text.toString())?.apply()
-            previousTitle = source.text.toString()
-            Toast.makeText(appCtx, "${source.text}", Toast.LENGTH_SHORT).show()
-            isFound = true
-        }
-
 //        if(source?.packageName?.contains("com.google.android.youtube")==true &&
-//                    source?.contentDescription?.isNotEmpty() == true && source?.isFocusable == true && source?.isClickable == true
+//                    source?.text?.isNotEmpty() == true && source?.isFocusable == true && source?.isClickable == true
 //            && source?.isEnabled == true && source?.isImportantForAccessibility == true && source?.isVisibleToUser == true &&
-//                    !list.contains(source?.contentDescription) && !source.contentDescription.equals(previousTitle)
+//                    !list.contains(source?.text) && !source.text.equals(previousTitle)
 //        ){
 //            Timber.d("==>Info2 ${source} ")
-//            Timber.d("==>Info22 ${source.contentDescription} ")
-//            previousTitle = source.contentDescription.toString()
+//            Timber.d("==>Info22 ${source.text} ")
+//            previousTitle = source.text.toString()
 ////            prefs?.edit()?.putString("testing1",source?.text.toString())?.apply()
-//            Toast.makeText(appCtx, "${source.contentDescription}", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(appCtx, "${source.text}", Toast.LENGTH_SHORT).show()
 //        }
 
-        for (i in 0 until (source?.childCount ?: 0)) {
-            try {
-                getInfo(source?.getChild(i))
-            } catch (e: Exception) {
-                Timber.d(e)
-            }
-        }
     }
 
     private fun blockerFindAccessibilityNodeInfosByViewId(
@@ -136,14 +166,14 @@ class MyAccessibilityService : AccessibilityService() {
                 or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS)
 
 
-        config.eventTypes = (AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or
+        config.eventTypes = (//AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or
                 AccessibilityEvent.TYPE_VIEW_CLICKED or
-                AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED or
+//                AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED or
                 AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT or
-                AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                        or AccessibilityEvent.TYPE_VIEW_LONG_CLICKED
+//                AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                         AccessibilityEvent.TYPE_VIEW_LONG_CLICKED
                         or AccessibilityEvent.TYPE_VIEW_CONTEXT_CLICKED
-                or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+//                or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
                          or AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED
                         or AccessibilityEvent.TYPE_VIEW_FOCUSED)
 
